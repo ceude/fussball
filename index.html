@@ -16,87 +16,99 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:radial-gradient(120% 80% at 50% -10%, #10402a 0%, #072016 60%, #04140d 100%);color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;-webkit-text-size-adjust:100%}
 body.dragging-active{touch-action:none}
-.wrap{max-width:640px;margin:0 auto;padding:10px 10px calc(12px + env(safe-area-inset-bottom))}
-header.top{text-align:center;margin-bottom:8px}
-header.top h1{font-family:"Oswald";font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:clamp(22px,6.5vw,36px);margin:0;line-height:.95}
+.wrap{max-width:640px;margin:0 auto;padding:8px 8px calc(10px + env(safe-area-inset-bottom))}
+header.top{text-align:center;margin-bottom:6px}
+header.top h1{font-family:"Oswald";font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:clamp(20px,6vw,34px);margin:0;line-height:.95}
 header.top h1 span{color:var(--flood)}
-header.top p{color:var(--muted);font-size:11px;margin:5px 0 0;line-height:1.3}
+header.top p{color:var(--muted);font-size:10.5px;margin:3px 0 0;line-height:1.25}
 
-.pool-wrap{margin:8px 0}
-.pool-label{font-family:"Oswald";text-transform:uppercase;letter-spacing:.14em;font-size:10px;color:var(--muted);margin:0 2px 5px;display:flex;align-items:center;gap:8px}
+.pool-wrap{margin:6px 0}
+.pool-label{font-family:"Oswald";text-transform:uppercase;letter-spacing:.14em;font-size:9px;color:var(--muted);margin:0 2px 4px;display:flex;align-items:center;gap:8px}
 .pool-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(234,243,230,.25),transparent)}
-#pool{min-height:56px;background:rgba(255,255,255,.03);border:1px dashed rgba(234,243,230,.18);border-radius:12px;padding:7px;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start;transition:background .15s,border-color .15s}
+#pool{min-height:50px;background:rgba(255,255,255,.03);border:1px dashed rgba(234,243,230,.18);border-radius:11px;padding:6px;display:flex;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;gap:4px;align-items:center;scrollbar-width:none}
+#pool::-webkit-scrollbar{display:none}
 
-.arena{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.team{background:var(--panel);border-radius:13px;overflow:hidden;border:1px solid rgba(234,243,230,.08)}
-.team h2{font-family:"Oswald";text-transform:uppercase;letter-spacing:.05em;font-size:12px;margin:0;padding:7px 9px;display:flex;align-items:center;gap:6px}
+.arena{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.team{background:var(--panel);border-radius:12px;overflow:hidden;border:1px solid rgba(234,243,230,.08)}
+.team h2{font-family:"Oswald";text-transform:uppercase;letter-spacing:.04em;font-size:11px;margin:0;padding:6px 8px;display:flex;align-items:center;gap:5px}
 .team.a h2{background:linear-gradient(90deg,rgba(226,72,60,.35),transparent)}
 .team.b h2{background:linear-gradient(90deg,rgba(46,125,224,.35),transparent)}
-.dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 .team.a .dot{background:var(--red)}
 .team.b .dot{background:var(--blue)}
-.team .count{margin-left:auto;font-weight:600;font-size:10px;color:var(--muted)}
+.team .count{margin-left:auto;font-weight:600;font-size:9.5px;color:var(--muted)}
 
-.pitch{position:relative;padding:7px;background:repeating-linear-gradient(0deg,var(--pitch) 0 28px,var(--pitch2) 28px 56px);display:flex;flex-direction:column;gap:6px}
-.pitch::before{content:"";position:absolute;inset:6px;border:2px solid rgba(234,243,230,.45);border-radius:7px;pointer-events:none}
-.pitch::after{content:"";position:absolute;left:50%;top:calc(33% + 4px);width:52px;height:52px;transform:translate(-50%,-50%);border:2px solid rgba(234,243,230,.35);border-radius:50%;pointer-events:none}
+.pitch{position:relative;padding:6px;background:repeating-linear-gradient(0deg,var(--pitch) 0 24px,var(--pitch2) 24px 48px);display:flex;flex-direction:column;gap:5px}
+.pitch::before{content:"";position:absolute;inset:5px;border:2px solid rgba(234,243,230,.45);border-radius:6px;pointer-events:none}
+.pitch::after{content:"";position:absolute;left:50%;top:calc(33% + 3px);width:46px;height:46px;transform:translate(-50%,-50%);border:2px solid rgba(234,243,230,.32);border-radius:50%;pointer-events:none}
 
-.zone{position:relative;z-index:1;min-height:56px;border-radius:8px;border:2px dashed transparent;display:flex;flex-wrap:wrap;gap:5px;align-items:center;justify-content:center;padding:6px;transition:background .15s,border-color .15s}
-.zone .ztag{position:absolute;top:3px;left:7px;font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:8px;color:rgba(234,243,230,.55)}
-.zone[data-zone="gk"]{margin:0 12%}
+.zone{position:relative;z-index:1;min-height:52px;border-radius:7px;border:2px dashed transparent;display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;padding:5px;transition:background .15s,border-color .15s}
+.zone .ztag{position:absolute;top:2px;left:6px;font-family:"Oswald";text-transform:uppercase;letter-spacing:.06em;font-size:7.5px;color:rgba(234,243,230,.55)}
+.zone[data-zone="gk"]{margin:0 10%}
 .drop-ok{background:rgba(232,255,58,.12);border-color:rgba(232,255,58,.6)!important}
 
-.chip{position:relative;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
-  width:44px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-radius:8px 8px 11px 11px;background:linear-gradient(180deg,#4a5560,#333c45);color:#fff;
-  box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);font-weight:700}
-.chip .num{font-family:"Oswald";font-size:17px;line-height:1}
-.chip .code{font-size:9px;letter-spacing:.02em;margin-top:1px;opacity:.9}
-.chip::before{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:17px;height:9px;border-radius:0 0 7px 7px;background:inherit}
+.chip{position:relative;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;flex:0 0 auto;
+  width:36px;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  border-radius:7px 7px 9px 9px;background:linear-gradient(180deg,#4a5560,#333c45);color:#fff;
+  box-shadow:0 2px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);font-weight:700}
+.chip .num{font-family:"Oswald";font-size:15px;line-height:1}
+.chip .code{font-size:8.5px;letter-spacing:.01em;margin-top:1px;opacity:.9}
+.chip::before{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:14px;height:7px;border-radius:0 0 6px 6px;background:inherit}
 .chip.team-a{background:linear-gradient(180deg,#e2483c,#a5271e)}
 .chip.team-b{background:linear-gradient(180deg,#2e7de0,#1a509b)}
 .chip.dragging{opacity:.3}
-.ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%) scale(1.08);box-shadow:0 10px 22px rgba(0,0,0,.5)}
+.ghost{position:fixed;z-index:999;pointer-events:none;transform:translate(-50%,-50%) scale(1.12);box-shadow:0 10px 22px rgba(0,0,0,.5)}
 
-.controls{margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:8px}
-.btn{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-weight:700;border:none;border-radius:11px;cursor:pointer;padding:13px 24px;font-size:16px}
+.controls{margin-top:8px;display:flex;flex-direction:column;align-items:center;gap:7px}
+.btn{font-family:"Oswald";text-transform:uppercase;letter-spacing:.07em;font-weight:700;border:none;border-radius:11px;cursor:pointer;padding:12px 22px;font-size:15px}
 .btn.calc{background:var(--flood);color:#08281a;box-shadow:0 4px 0 #9fb226;width:100%;max-width:440px}
 .btn.calc:active{transform:translateY(2px);box-shadow:0 2px 0 #9fb226}
 .btn.ghost-btn{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid rgba(234,243,230,.2);font-size:12px;padding:9px 15px}
 
-.scoreboard{width:100%;max-width:440px;background:var(--panel);border:1px solid rgba(232,255,58,.25);border-radius:13px;padding:11px;display:none;margin-top:8px}
+.scoreboard{width:100%;max-width:440px;background:var(--panel);border:1px solid rgba(232,255,58,.25);border-radius:12px;padding:10px;display:none;margin-top:7px}
 .scoreboard.show{display:block}
 .sb-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
 .sb-team{text-align:center}
-.sb-team .lab{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--muted)}
-.sb-team .val{font-family:"Oswald";font-weight:700;font-size:34px;color:var(--flood);line-height:1}
-.sb-vs{font-family:"Oswald";color:var(--muted);font-size:13px}
-.sb-bar{height:7px;border-radius:5px;overflow:hidden;display:flex;margin-top:9px;background:#0a2016}
+.sb-team .lab{font-family:"Oswald";text-transform:uppercase;letter-spacing:.06em;font-size:10px;color:var(--muted)}
+.sb-team .val{font-family:"Oswald";font-weight:700;font-size:30px;color:var(--flood);line-height:1}
+.sb-vs{font-family:"Oswald";color:var(--muted);font-size:12px}
+.sb-bar{height:6px;border-radius:4px;overflow:hidden;display:flex;margin-top:7px;background:#0a2016}
 .sb-bar .a{background:var(--red)}
 .sb-bar .b{background:var(--blue)}
-.sb-note{text-align:center;margin-top:8px;font-size:12px;color:var(--ink)}
+.sb-note{text-align:center;margin-top:7px;font-size:11.5px;color:var(--ink)}
 .sb-note b{color:var(--flood)}
-.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
-.odd{background:#0a2016;border:1px solid rgba(234,243,230,.12);border-radius:10px;padding:7px 5px;text-align:center}
-.odd .ok{display:block;font-family:"Oswald";font-size:11px;letter-spacing:.12em;color:var(--muted)}
-.odd .ov{display:block;font-family:"Oswald";font-weight:700;font-size:22px;color:var(--flood);line-height:1.15}
-.odd .ol{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
 
-.share{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:2px}
+.stats{margin-top:8px;border-top:1px solid rgba(234,243,230,.1);padding-top:7px}
+.st-head,.st-row{display:grid;grid-template-columns:1fr 44px 44px;align-items:center;gap:6px}
+.st-head{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:9px;color:var(--muted);margin-bottom:2px}
+.st-head .ta,.st-head .tb{text-align:center;color:var(--ink)}
+.st-row{padding:2px 0}
+.st-row span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-size:10px}
+.st-row .va,.st-row .vb{text-align:center;font-family:"Oswald";font-weight:700;font-size:16px}
+.st-row .va{color:#ff9a8f}
+.st-row .vb{color:#8fbcf6}
+
+.odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
+.odd{background:#0a2016;border:1px solid rgba(234,243,230,.12);border-radius:9px;padding:6px 4px;text-align:center}
+.odd .ok{display:block;font-family:"Oswald";font-size:10px;letter-spacing:.1em;color:var(--muted)}
+.odd .ov{display:block;font-family:"Oswald";font-weight:700;font-size:20px;color:var(--flood);line-height:1.15}
+.odd .ol{display:block;font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.02em}
+
+.share{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:1px}
 .btn.wa{background:#25D366;color:#062b14;box-shadow:0 4px 0 #128C4B}
 .btn.wa:active{transform:translateY(2px);box-shadow:0 2px 0 #128C4B}
 
-.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#08281a;border:1px solid var(--flood);color:var(--flood);font-family:"Oswald";letter-spacing:.06em;text-transform:uppercase;font-size:12px;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:1000}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(20px);background:#08281a;border:1px solid var(--flood);color:var(--flood);font-family:"Oswald";letter-spacing:.06em;text-transform:uppercase;font-size:12px;padding:9px 15px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:1000}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.hint{color:var(--muted);font-size:11px;text-align:center;margin-top:2px;line-height:1.3}
+.hint{color:var(--muted);font-size:10px;text-align:center;margin-top:1px;line-height:1.25}
 
 @media(min-width:560px){
-  .wrap{padding:16px 14px}
-  .chip{width:50px;height:56px}
-  .chip .num{font-size:19px}
-  .chip .code{font-size:10px}
-  .zone{min-height:64px}
-  header.top p{font-size:13px}
+  .wrap{padding:14px}
+  .chip{width:46px;height:52px}
+  .chip .num{font-size:18px} .chip .code{font-size:10px}
+  #pool{flex-wrap:wrap;overflow:visible;gap:6px;min-height:60px}
+  .zone{min-height:60px}
+  header.top p{font-size:12px}
 }
 
 .modal{position:fixed;inset:0;background:rgba(2,10,6,.82);display:none;align-items:center;justify-content:center;padding:16px;z-index:1001;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
@@ -114,7 +126,7 @@ header.top p{color:var(--muted);font-size:11px;margin:5px 0 0;line-height:1.3}
 <div class="wrap">
   <header class="top">
     <h1>Halı Saha <span>Kadro</span></h1>
-    <p>Oyuncuları mevkilere sürükle-bırak. İki takım da en az 3 kişi olunca Hesapla’ya bas.</p>
+    <p>Oyuncuları mevkilere sürükle. 3+3 kişi olunca Hesapla’ya bas.</p>
   </header>
 
   <div class="pool-wrap">
@@ -144,12 +156,20 @@ header.top p{color:var(--muted);font-size:11px;margin:5px 0 0;line-height:1.3}
 
     <div class="scoreboard" id="scoreboard">
       <div class="sb-row">
-        <div class="sb-team"><div class="lab">A Takımı</div><div class="val" id="scoreA">0</div></div>
+        <div class="sb-team"><div class="lab">A Payı</div><div class="val" id="scoreA">0</div></div>
         <div class="sb-vs">VS</div>
-        <div class="sb-team"><div class="lab">B Takımı</div><div class="val" id="scoreB">0</div></div>
+        <div class="sb-team"><div class="lab">B Payı</div><div class="val" id="scoreB">0</div></div>
       </div>
       <div class="sb-bar"><div class="a" id="barA" style="width:50%"></div><div class="b" id="barB" style="width:50%"></div></div>
       <div class="sb-note" id="sbNote"></div>
+
+      <div class="stats">
+        <div class="st-head"><span>100 üzerinden</span><span class="ta">A</span><span class="tb">B</span></div>
+        <div class="st-row"><span>Takım Gücü</span><span class="va" id="gucA">–</span><span class="vb" id="gucB">–</span></div>
+        <div class="st-row"><span>Kale &amp; Defans</span><span class="va" id="defA">–</span><span class="vb" id="defB">–</span></div>
+        <div class="st-row"><span>Atak</span><span class="va" id="atkA">–</span><span class="vb" id="atkB">–</span></div>
+      </div>
+
       <div class="odds" id="oddsRow">
         <div class="odd"><span class="ok">1</span><span class="ov" id="odd1">–</span><span class="ol">A kazanır</span></div>
         <div class="odd"><span class="ok">X</span><span class="ov" id="oddX">–</span><span class="ol">Berabere</span></div>
@@ -164,7 +184,7 @@ header.top p{color:var(--muted);font-size:11px;margin:5px 0 0;line-height:1.3}
       <button class="btn wa" id="imgBtn">Görseli WhatsApp’ta Paylaş</button>
       <button class="btn ghost-btn" id="resetBtn">Sıfırla</button>
     </div>
-    <div class="hint">Kaleye en fazla 1 kişi. Kadroyu değiştirdiğinde puan sıfırlanır, tekrar Hesapla’ya bas.</div>
+    <div class="hint">Kaleye en fazla 1 kişi. Kadro değişince puan sıfırlanır, tekrar Hesapla’ya bas.</div>
   </div>
 </div>
 
@@ -230,9 +250,8 @@ function onMove(e){
   }
   drag.ghost.style.left=e.clientX+"px";
   drag.ghost.style.top=e.clientY+"px";
-  /* kenara gelince otomatik kaydır — uzak bölgelere erişim için */
   const vh=window.innerHeight;
-  if(e.clientY<64) scrollDir=-1; else if(e.clientY>vh-72) scrollDir=1; else scrollDir=0;
+  if(e.clientY<60) scrollDir=-1; else if(e.clientY>vh-68) scrollDir=1; else scrollDir=0;
   if(scrollDir!==0 && !scrollRAF) scrollRAF=requestAnimationFrame(edgeScroll);
   document.querySelectorAll(".drop-ok").forEach(z=>z.classList.remove("drop-ok"));
   const z=zoneUnder(e.clientX,e.clientY);
@@ -255,8 +274,8 @@ function onUp(e){
   d.chip.classList.remove("dragging");
   if(!d.active) return;
   const z=zoneUnder(e.clientX,e.clientY);
-  if(!z) return;                       // geçersiz alan: yerinde kalır
-  if(z===d.chip.parentElement) return; // aynı yere bırakıldı
+  if(!z) return;
+  if(z===d.chip.parentElement) return;
   if(z.dataset.zone==="gk" && z.querySelector(".chip")){ toast("Kaleye en fazla 1 kişi"); return; }
   z.appendChild(d.chip);
   recolor(d.chip);
@@ -285,27 +304,35 @@ function update(){
   document.getElementById("cntA").textContent=teamChips("A").length+" kişi";
   document.getElementById("cntB").textContent=teamChips("B").length+" kişi";
 }
-function teamScore(t){
-  let s=0;
+/* def = savunma toplamı, atk = atak toplamı; 100 üzerinden metrikler */
+function teamStats(t){
+  let def=0, atk=0, n=0;
   document.querySelectorAll(`.team[data-team="${t}"] .zone`).forEach(z=>{
     const zone=z.dataset.zone;
     z.querySelectorAll(".chip").forEach(c=>{
-      const r=_R[c.dataset.code];
-      if(zone==="gk") s+=r[0]+r[3];
-      else if(zone==="dm") s+=r[1]+r[4];
-      else s+=r[2]+r[5];
+      const r=_R[c.dataset.code]; n++;
+      if(zone==="gk"){ def+=r[0]; atk+=r[3]; }
+      else if(zone==="dm"){ def+=r[1]; atk+=r[4]; }
+      else { atk+=r[2]; def+=r[5]; }
     });
   });
-  return Math.round(s*10)/10;
+  const total=def+atk;
+  return {
+    n, total,
+    guc:    n?Math.round(total/(n*15)*100):0,
+    defans: n?Math.round(def/(n*10)*100):0,
+    atak:   n?Math.round(atk/(n*10)*100):0
+  };
 }
 
 document.getElementById("calcBtn").addEventListener("click",()=>{
-  const a=teamChips("A").length, b=teamChips("B").length;
-  if(a<3||b<3){ toast("Her iki takımda en az 3 kişi olmalı"); return; }
-  const rawA=teamScore("A"), rawB=teamScore("B");
-  const tot=rawA+rawB||1;
-  const sa=Math.round(rawA/tot*100), sb=100-sa;   // toplam her zaman 100
-  lastScore={a:sa,b:sb}; dirty=false;
+  const na=teamChips("A").length, nb=teamChips("B").length;
+  if(na<3||nb<3){ toast("Her iki takımda en az 3 kişi olmalı"); return; }
+  const A=teamStats("A"), B=teamStats("B");
+  const tot=A.total+B.total||1;
+  const sa=Math.round(A.total/tot*100), sb=100-sa;   // pay toplamı her zaman 100
+  lastScore={a:sa,b:sb, gucA:A.guc,gucB:B.guc, defA:A.defans,defB:B.defans, atkA:A.atak,atkB:B.atak};
+  dirty=false;
   document.getElementById("scoreA").textContent=sa;
   document.getElementById("scoreB").textContent=sb;
   document.getElementById("barA").style.width=sa+"%";
@@ -313,7 +340,10 @@ document.getElementById("calcBtn").addEventListener("click",()=>{
   const diff=Math.abs(sa-sb);
   document.getElementById("sbNote").innerHTML = diff===0
     ? "Tam denge! İki takım da 50 – 50."
-    : `<b>${sa>sb?"A":"B"} Takımı</b> önde — fark ${diff} puan (100 üzerinden).`;
+    : `<b>${sa>sb?"A":"B"} Takımı</b> önde — pay farkı ${diff} (100 üzerinden).`;
+  document.getElementById("gucA").textContent=A.guc; document.getElementById("gucB").textContent=B.guc;
+  document.getElementById("defA").textContent=A.defans; document.getElementById("defB").textContent=B.defans;
+  document.getElementById("atkA").textContent=A.atak; document.getElementById("atkB").textContent=B.atak;
   lastOdds=computeOdds(sa,sb);
   document.getElementById("odd1").textContent=lastOdds.one;
   document.getElementById("oddX").textContent=lastOdds.x;
@@ -342,7 +372,12 @@ function buildText(){
   const a=teamChips("A").map(c=>c.dataset.code).join(", ")||"-";
   const b=teamChips("B").map(c=>c.dataset.code).join(", ")||"-";
   let t=`⚽ HALI SAHA KADRO\n\n🔴 A Takımı: ${a}\n🔵 B Takımı: ${b}`;
-  if(lastScore) t+=`\n\n📊 Güç (100 üz.) → A: ${lastScore.a}  |  B: ${lastScore.b}`;
+  if(lastScore){
+    t+=`\n\n📊 Pay → A: ${lastScore.a}  |  B: ${lastScore.b}`;
+    t+=`\n💪 Güç → A: ${lastScore.gucA}  |  B: ${lastScore.gucB}`;
+    t+=`\n🛡️ Kale&Defans → A: ${lastScore.defA}  |  B: ${lastScore.defB}`;
+    t+=`\n⚡ Atak → A: ${lastScore.atkA}  |  B: ${lastScore.atkB}`;
+  }
   if(lastOdds) t+=`\n🎲 Oran 1-X-2 → ${lastOdds.one} / ${lastOdds.x} / ${lastOdds.two}`;
   return t;
 }
@@ -365,12 +400,11 @@ document.getElementById("imgBtn").addEventListener("click",async ()=>{
   }catch(e){ toast("Görsel oluşturulamadı"); }
 });
 document.getElementById("shareNow").addEventListener("click",async ()=>{
-  const text=buildText();
   if(shareFile && navigator.canShare && navigator.canShare({files:[shareFile]})){
-    try{ await navigator.share({files:[shareFile],text}); }
+    try{ await navigator.share({files:[shareFile]}); }   // sadece görsel, metin yok
     catch(err){ /* kullanıcı iptal etti */ }
   }else{
-    window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+    window.open("https://wa.me/","_blank");
   }
 });
 document.getElementById("closeModal").addEventListener("click",()=>{
