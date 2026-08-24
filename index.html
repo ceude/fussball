@@ -78,16 +78,6 @@ header.top p{color:var(--muted);font-size:10.5px;margin:3px 0 0;line-height:1.25
 .sb-note{text-align:center;margin-top:7px;font-size:11.5px;color:var(--ink)}
 .sb-note b{color:var(--flood)}
 
-.stats{margin-top:8px;border-top:1px solid rgba(234,243,230,.1);padding-top:7px}
-.st-head,.st-row{display:grid;grid-template-columns:1fr 44px 44px;align-items:center;gap:6px}
-.st-head{font-family:"Oswald";text-transform:uppercase;letter-spacing:.08em;font-size:9px;color:var(--muted);margin-bottom:2px}
-.st-head .ta,.st-head .tb{text-align:center;color:var(--ink)}
-.st-row{padding:2px 0}
-.st-row span:first-child{color:var(--muted);text-transform:uppercase;letter-spacing:.03em;font-size:10px}
-.st-row .va,.st-row .vb{text-align:center;font-family:"Oswald";font-weight:700;font-size:16px}
-.st-row .va{color:#ff9a8f}
-.st-row .vb{color:#8fbcf6}
-
 .odds{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
 .odd{background:#0a2016;border:1px solid rgba(234,243,230,.12);border-radius:9px;padding:6px 4px;text-align:center}
 .odd .ok{display:block;font-family:"Oswald";font-size:10px;letter-spacing:.1em;color:var(--muted)}
@@ -162,13 +152,6 @@ header.top p{color:var(--muted);font-size:10.5px;margin:3px 0 0;line-height:1.25
       </div>
       <div class="sb-bar"><div class="a" id="barA" style="width:50%"></div><div class="b" id="barB" style="width:50%"></div></div>
       <div class="sb-note" id="sbNote"></div>
-
-      <div class="stats">
-        <div class="st-head"><span>100 üzerinden</span><span class="ta">A</span><span class="tb">B</span></div>
-        <div class="st-row"><span>Takım Gücü</span><span class="va" id="gucA">–</span><span class="vb" id="gucB">–</span></div>
-        <div class="st-row"><span>Kale &amp; Defans</span><span class="va" id="defA">–</span><span class="vb" id="defB">–</span></div>
-        <div class="st-row"><span>Atak</span><span class="va" id="atkA">–</span><span class="vb" id="atkB">–</span></div>
-      </div>
 
       <div class="odds" id="oddsRow">
         <div class="odd"><span class="ok">1</span><span class="ov" id="odd1">–</span><span class="ol">A kazanır</span></div>
@@ -304,34 +287,28 @@ function update(){
   document.getElementById("cntA").textContent=teamChips("A").length+" kişi";
   document.getElementById("cntB").textContent=teamChips("B").length+" kişi";
 }
-/* def = savunma toplamı, atk = atak toplamı; 100 üzerinden metrikler */
-function teamStats(t){
-  let def=0, atk=0, n=0;
+/* takımın toplam gücünü (def+atk) hesaplar — yalnızca payı/oranları üretmek için kullanılır, ekrana ayrı ayrı basılmaz */
+function teamTotal(t){
+  let def=0, atk=0;
   document.querySelectorAll(`.team[data-team="${t}"] .zone`).forEach(z=>{
     const zone=z.dataset.zone;
     z.querySelectorAll(".chip").forEach(c=>{
-      const r=_R[c.dataset.code]; n++;
+      const r=_R[c.dataset.code];
       if(zone==="gk"){ def+=r[0]; atk+=r[3]; }
       else if(zone==="dm"){ def+=r[1]; atk+=r[4]; }
       else { atk+=r[2]; def+=r[5]; }
     });
   });
-  const total=def+atk;
-  return {
-    n, total,
-    guc:    n?Math.round(total/(n*15)*100):0,
-    defans: n?Math.round(def/(n*10)*100):0,
-    atak:   n?Math.round(atk/(n*10)*100):0
-  };
+  return def+atk;
 }
 
 document.getElementById("calcBtn").addEventListener("click",()=>{
   const na=teamChips("A").length, nb=teamChips("B").length;
   if(na<3||nb<3){ toast("Her iki takımda en az 3 kişi olmalı"); return; }
-  const A=teamStats("A"), B=teamStats("B");
-  const tot=A.total+B.total||1;
-  const sa=Math.round(A.total/tot*100), sb=100-sa;   // pay toplamı her zaman 100
-  lastScore={a:sa,b:sb, gucA:A.guc,gucB:B.guc, defA:A.defans,defB:B.defans, atkA:A.atak,atkB:B.atak};
+  const totalA=teamTotal("A"), totalB=teamTotal("B");
+  const tot=totalA+totalB||1;
+  const sa=Math.round(totalA/tot*100), sb=100-sa;   // pay toplamı her zaman 100
+  lastScore={a:sa,b:sb};
   dirty=false;
   document.getElementById("scoreA").textContent=sa;
   document.getElementById("scoreB").textContent=sb;
@@ -341,9 +318,6 @@ document.getElementById("calcBtn").addEventListener("click",()=>{
   document.getElementById("sbNote").innerHTML = diff===0
     ? "Tam denge! İki takım da 50 – 50."
     : `<b>${sa>sb?"A":"B"} Takımı</b> önde — pay farkı ${diff} (100 üzerinden).`;
-  document.getElementById("gucA").textContent=A.guc; document.getElementById("gucB").textContent=B.guc;
-  document.getElementById("defA").textContent=A.defans; document.getElementById("defB").textContent=B.defans;
-  document.getElementById("atkA").textContent=A.atak; document.getElementById("atkB").textContent=B.atak;
   lastOdds=computeOdds(sa,sb);
   document.getElementById("odd1").textContent=lastOdds.one;
   document.getElementById("oddX").textContent=lastOdds.x;
@@ -368,19 +342,6 @@ document.getElementById("resetBtn").addEventListener("click",()=>{
 });
 
 /* ---- paylaşım ---- */
-function buildText(){
-  const a=teamChips("A").map(c=>c.dataset.code).join(", ")||"-";
-  const b=teamChips("B").map(c=>c.dataset.code).join(", ")||"-";
-  let t=`⚽ HALI SAHA KADRO\n\n🔴 A Takımı: ${a}\n🔵 B Takımı: ${b}`;
-  if(lastScore){
-    t+=`\n\n📊 Pay → A: ${lastScore.a}  |  B: ${lastScore.b}`;
-    t+=`\n💪 Güç → A: ${lastScore.gucA}  |  B: ${lastScore.gucB}`;
-    t+=`\n🛡️ Kale&Defans → A: ${lastScore.defA}  |  B: ${lastScore.defB}`;
-    t+=`\n⚡ Atak → A: ${lastScore.atkA}  |  B: ${lastScore.atkB}`;
-  }
-  if(lastOdds) t+=`\n🎲 Oran 1-X-2 → ${lastOdds.one} / ${lastOdds.x} / ${lastOdds.two}`;
-  return t;
-}
 /* iki adımlı: önce görseli üret + önizle (iOS'ta paylaşım izni bu sayede korunur) */
 let shareFile=null, shareUrl=null;
 document.getElementById("imgBtn").addEventListener("click",async ()=>{
