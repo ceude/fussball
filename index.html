@@ -21,7 +21,8 @@
   --panel:#08281a;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:radial-gradient(120% 80% at 50% -10%, #10402a 0%, #072016 60%, #04140d 100%);color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:radial-gradient(120% 80% at 50% -10%, #10402a 0%, #072016 60%, #04140d 100%);color:var(--ink);font-family:"Inter",system-ui,sans-serif;-webkit-tap-highlight-color:transparent;overscroll-behavior:none;-webkit-text-size-adjust:100%}
+body.dragging-active{overflow:hidden;touch-action:none}
 .wrap{max-width:880px;margin:0 auto;padding:18px 14px 60px}
 header.top{text-align:center;margin-bottom:14px}
 header.top h1{font-family:"Oswald";font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:clamp(26px,7vw,44px);margin:0;line-height:.95}
@@ -34,7 +35,7 @@ header.top p{color:var(--muted);font-size:13px;margin:8px 0 0}
 #pool{min-height:64px;background:rgba(255,255,255,.03);border:1px dashed rgba(234,243,230,.18);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;transition:background .15s,border-color .15s}
 
 .arena{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:560px){.arena{grid-template-columns:1fr}}
+@media(max-width:640px){.arena{grid-template-columns:1fr}.wrap{padding:14px 10px 60px}}
 .team{background:var(--panel);border-radius:16px;overflow:hidden;border:1px solid rgba(234,243,230,.08)}
 .team h2{font-family:"Oswald";text-transform:uppercase;letter-spacing:.1em;font-size:16px;margin:0;padding:11px 14px;display:flex;align-items:center;gap:9px}
 .team.a h2{background:linear-gradient(90deg,rgba(226,72,60,.35),transparent)}
@@ -55,7 +56,7 @@ header.top p{color:var(--muted);font-size:13px;margin:8px 0 0}
 .zone[data-zone="gk"]{margin:0 22%}
 .drop-ok{background:rgba(232,255,58,.1);border-color:rgba(232,255,58,.6)!important}
 
-.chip{position:relative;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;
+.chip{position:relative;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
   width:52px;height:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;
   border-radius:9px 9px 12px 12px;background:linear-gradient(180deg,#4a5560,#333c45);color:#fff;
   box-shadow:0 3px 0 rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.15);font-weight:700}
@@ -93,6 +94,16 @@ header.top p{color:var(--muted);font-size:13px;margin:8px 0 0}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:#08281a;border:1px solid var(--flood);color:var(--flood);font-family:"Oswald";letter-spacing:.06em;text-transform:uppercase;font-size:13px;padding:11px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:1000}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .hint{color:var(--muted);font-size:12px;text-align:center;margin-top:4px}
+
+.modal{position:fixed;inset:0;background:rgba(2,10,6,.82);display:none;align-items:center;justify-content:center;padding:16px;z-index:1001;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.modal.show{display:flex}
+.modal-box{background:var(--panel);border:1px solid rgba(232,255,58,.3);border-radius:16px;padding:16px;max-width:430px;width:100%;max-height:92vh;overflow:auto}
+.modal-title{font-family:"Oswald";text-transform:uppercase;letter-spacing:.1em;font-size:15px;color:var(--flood);margin:0 0 12px;text-align:center}
+.modal-box img{width:100%;border-radius:10px;display:block;background:#072016}
+.modal-hint{color:var(--muted);font-size:12.5px;text-align:center;margin:12px 4px}
+.modal-hint b{color:var(--ink)}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn{flex:1;padding:14px;font-size:15px}
 </style>
 </head>
 <body>
@@ -151,6 +162,18 @@ header.top p{color:var(--muted);font-size:13px;margin:8px 0 0}
 
 <div class="toast" id="toast"></div>
 
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-title">Takım Görseli</div>
+    <img id="previewImg" alt="Halı saha kadro görseli">
+    <p class="modal-hint">Paylaşmak için <b>WhatsApp’ta Paylaş</b>’a bas. Ya da görsele <b>basılı tutup</b> “Fotoğraflara Kaydet”i seç.</p>
+    <div class="modal-actions">
+      <button class="btn wa" id="shareNow">WhatsApp’ta Paylaş</button>
+      <button class="btn ghost-btn" id="closeModal">Kapat</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ---- gizli puanlar (XOR + base64) ---- */
 function _dec(s){
@@ -191,6 +214,7 @@ function onMove(e){
   e.preventDefault();
   if(!drag.active){
     drag.active=true;
+    document.body.classList.add("dragging-active");
     drag.chip.classList.add("dragging");
     const g=drag.chip.cloneNode(true);
     g.className="chip ghost "+[...drag.chip.classList].filter(c=>c.startsWith("team-")).join(" ");
@@ -207,6 +231,7 @@ function onUp(e){
   window.removeEventListener("pointerup",onUp);
   if(!drag) return;
   const d=drag; drag=null;
+  document.body.classList.remove("dragging-active");
   document.querySelectorAll(".drop-ok").forEach(z=>z.classList.remove("drop-ok"));
   if(d.ghost) d.ghost.remove();
   d.chip.classList.remove("dragging");
@@ -262,17 +287,18 @@ function teamScore(t){
 document.getElementById("calcBtn").addEventListener("click",()=>{
   const a=teamChips("A").length, b=teamChips("B").length;
   if(a<3||b<3){ toast("Her iki takımda en az 3 kişi olmalı"); return; }
-  const sa=teamScore("A"), sb=teamScore("B");
+  const rawA=teamScore("A"), rawB=teamScore("B");
+  const tot=rawA+rawB||1;
+  const sa=Math.round(rawA/tot*100), sb=100-sa;   // toplam her zaman 100
   lastScore={a:sa,b:sb}; dirty=false;
   document.getElementById("scoreA").textContent=sa;
   document.getElementById("scoreB").textContent=sb;
-  const tot=sa+sb||1;
-  document.getElementById("barA").style.width=(sa/tot*100)+"%";
-  document.getElementById("barB").style.width=(sb/tot*100)+"%";
-  const diff=Math.round(Math.abs(sa-sb)*10)/10;
+  document.getElementById("barA").style.width=sa+"%";
+  document.getElementById("barB").style.width=sb+"%";
+  const diff=Math.abs(sa-sb);
   let note;
-  if(diff===0) note="Tam denge! İki takım da eşit güçte.";
-  else note=`<b>${sa>sb?"A":"B"} Takımı</b> önde — fark ${diff} puan.`;
+  if(diff===0) note="Tam denge! İki takım da 50 – 50.";
+  else note=`<b>${sa>sb?"A":"B"} Takımı</b> önde — fark ${diff} puan (100 üzerinden).`;
   document.getElementById("sbNote").innerHTML=note;
   document.getElementById("scoreboard").classList.add("show");
 });
@@ -287,32 +313,44 @@ function buildText(){
   const a=teamChips("A").map(c=>c.dataset.code).join(", ")||"-";
   const b=teamChips("B").map(c=>c.dataset.code).join(", ")||"-";
   let t=`⚽ HALI SAHA KADRO\n\n🔴 A Takımı: ${a}\n🔵 B Takımı: ${b}`;
-  if(lastScore) t+=`\n\n📊 Puan → A: ${lastScore.a}  |  B: ${lastScore.b}`;
+  if(lastScore) t+=`\n\n📊 Güç (100 üz.) → A: ${lastScore.a}  |  B: ${lastScore.b}`;
   return t;
 }
 document.getElementById("txtBtn").addEventListener("click",()=>{
   window.open("https://wa.me/?text="+encodeURIComponent(buildText()),"_blank");
 });
+/* iki adımlı: önce görseli üret + önizle (iOS'ta paylaşım izni bu sayede korunur) */
+let shareFile=null, shareUrl=null;
 document.getElementById("imgBtn").addEventListener("click",async ()=>{
   toast("Görsel hazırlanıyor…");
   const node=document.getElementById("capture");
   try{
-    const canvas=await html2canvas(node,{backgroundColor:"#072016",scale:2});
-    canvas.toBlob(async(blob)=>{
-      const file=new File([blob],"halisaha-kadro.png",{type:"image/png"});
-      const text=buildText();
-      if(navigator.canShare && navigator.canShare({files:[file]})){
-        try{ await navigator.share({files:[file],text}); }
-        catch(err){ /* kullanıcı iptal etti */ }
-      }else{
-        const url=URL.createObjectURL(blob);
-        const a=document.createElement("a"); a.href=url; a.download="halisaha-kadro.png"; a.click();
-        URL.revokeObjectURL(url);
-        window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
-        toast("Görsel indirildi, WhatsApp açıldı");
-      }
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    const canvas=await html2canvas(node,{backgroundColor:"#072016",scale:2,useCORS:true});
+    canvas.toBlob((blob)=>{
+      if(!blob){ toast("Görsel oluşturulamadı"); return; }
+      shareFile=new File([blob],"halisaha-kadro.png",{type:"image/png"});
+      if(shareUrl) URL.revokeObjectURL(shareUrl);
+      shareUrl=URL.createObjectURL(blob);
+      document.getElementById("previewImg").src=shareUrl;
+      document.getElementById("modal").classList.add("show");
     },"image/png");
   }catch(e){ toast("Görsel oluşturulamadı"); }
+});
+document.getElementById("shareNow").addEventListener("click",async ()=>{
+  const text=buildText();
+  if(shareFile && navigator.canShare && navigator.canShare({files:[shareFile]})){
+    try{ await navigator.share({files:[shareFile],text}); }
+    catch(err){ /* kullanıcı iptal etti */ }
+  }else{
+    window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+  }
+});
+document.getElementById("closeModal").addEventListener("click",()=>{
+  document.getElementById("modal").classList.remove("show");
+});
+document.getElementById("modal").addEventListener("click",e=>{
+  if(e.target.id==="modal") document.getElementById("modal").classList.remove("show");
 });
 
 /* ---- toast ---- */
